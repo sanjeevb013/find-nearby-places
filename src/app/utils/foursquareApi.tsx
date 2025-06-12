@@ -16,9 +16,11 @@ export interface Place {
       longitude: number;
     };
   };
-  categories: { id: number; name: string }[];
+  categories: { id: number; name: string, icon: {prefix: string;
+  suffix: string} }[];
   rating?: number;
   distance: number;
+ 
 }
 
 

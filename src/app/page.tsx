@@ -57,14 +57,14 @@ const Home: NextPage = () => {
       <div className="flex flex-col items-center gap-4 mb-6">
         <LocationButton onLocate={detectLocation} loading={loadingLocation} />
 
-        <div className="space-x-3">
-          {['restaurant', 'cafe', 'park'].map((type) => (
+        <div className="space-x-3 w-[24rem] p-2">
+          {['restaurant', 'cafe', 'park','hospital'].map((type) => (
             <button
               key={type}
               onClick={() => onSearchChange(type)}
-              className={`px-4 py-2 rounded cursor-pointer ${
+              className={`px-4 py-2 rounded  ${
                 searchQuery === type ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'
-              }`}
+              } ${!location ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
             >
               {type.charAt(0).toUpperCase() + type.slice(1)}
             </button>
