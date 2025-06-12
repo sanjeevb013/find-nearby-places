@@ -62,9 +62,9 @@ const Home: NextPage = () => {
             <button
               key={type}
               onClick={() => onSearchChange(type)}
-              className={`px-4 py-2 rounded cursor-pointer ${
+              className={`px-4 py-2 rounded  ${
                 searchQuery === type ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'
-              }`}
+              } ${!location ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
             >
               {type.charAt(0).toUpperCase() + type.slice(1)}
             </button>
