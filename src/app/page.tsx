@@ -30,7 +30,6 @@ const Home: NextPage = () => {
       const pos   = await getCurrentLocation();
       const next  = [pos.coords.latitude, pos.coords.longitude] as [number, number];
       setCoords(next);
-
       // immediately pull nearby places for the initial chip
       dispatch(fetchPlaces({ lat: next[0], lng: next[1], query, limit: 15 }));
     } catch (err) {
