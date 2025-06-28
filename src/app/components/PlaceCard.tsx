@@ -12,7 +12,7 @@ export const PlaceCard: React.FC<Props> = ({ place }) => {
     ? `${category.icon.prefix}64${category.icon.suffix}`
     : null;
   return (
-    <div className="border rounded p-3 shadow-sm hover:shadow-md cursor-pointer mb-2 flex items-center gap-4">
+    <div className="border rounded p-3 shadow-sm hover:shadow-md cursor-pointer mb-2 flex items-center gap-4 h-full">
       {iconUrl && (
         <img src={iconUrl} alt={category?.name} className="w-8 h-8 bg-gray-400 rounded-[50%] p-1" />
       )}
