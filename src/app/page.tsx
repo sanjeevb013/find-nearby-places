@@ -48,7 +48,6 @@ const Home: NextPage = () => {
     setQuery(nextQuery);
     dispatch(fetchPlaces({ lat: coords[0], lng: coords[1], query: nextQuery, limit: 15 }));
   };
-
   return (
     <main className="flex-1 overflow-y-auto p-4 w-full">
       <h1 className="text-3xl font-bold mb-6 text-center">Nearby Places Finder 🌍</h1>
@@ -79,7 +78,7 @@ const Home: NextPage = () => {
             </p>
 
             <div className="grid md:grid-cols-2 gap-6 mt-6 h-full w-full">
-              <PlaceList places={places} />
+              <PlaceList places={places} query={query}/>
               <MapView   places={places} center={coords} />
             </div>
           </>

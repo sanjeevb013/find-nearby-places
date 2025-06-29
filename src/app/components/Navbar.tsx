@@ -20,7 +20,7 @@ export default function Navbar() {
       return () => clearTimeout(timeout)
     }
   }, [index, fullText])
-  console.log(theme,"hhh")
+
   return (
     <nav className="flex justify-between p-4 bg-gray-200 dark:bg-gray-800 text-black dark:text-white">
       <h1 className="text-xl flex items-center font-semibold tracking-wide">
