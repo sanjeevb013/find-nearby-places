@@ -4,6 +4,7 @@ import { getCurrentLocation } from '../utils/getLocation';
 
 interface Props {
   place: Place;
+  next:[];
 }
 
 export const PlaceCard: React.FC<Props> = ({ place }) => {
@@ -19,21 +20,25 @@ export const PlaceCard: React.FC<Props> = ({ place }) => {
     }
 
     try {
-      const pos = await getCurrentLocation();
-        const next  = [pos.coords.latitude, pos.coords.longitude] as [number, number];
-
-      const userLat = next[0];
-      const userLng = next[1];
+      const next = localStorage.getItem('userLocation')
+      console.log(next)
+    if (next) {
+     const [userLat, userLng] = JSON.parse(next) as [number, number];
+      console.log("Latitude:", userLat);
+      console.log("Longitude:", userLng);
+} else {
+  console.error("No location data found in localStorage");
+}
       // console.log(userLat, userLng, next)
       const destinationLat = place.geocodes?.main?.latitude;
       const destinationLng = place.geocodes?.main?.longitude;
 
-      if (userLat && userLng && destinationLat && destinationLng) {
-        const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLat},${userLng}&destination=${destinationLat},${destinationLng}`;
-        window.open(mapsUrl, '_blank');
-      } else {
-        alert('Destination coordinates not available.');
-      }
+      // if (userLat && userLng && destinationLat && destinationLng) {
+      //   const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLat},${userLng}&destination=${destinationLat},${destinationLng}`;
+      //   window.open(mapsUrl, '_blank');
+      // } else {
+      //   alert('Destination coordinates not available.');
+      // }
     } catch (error) {
       console.error(error);
       alert('Failed to get your location. Please allow location access.');
@@ -41,7 +46,7 @@ export const PlaceCard: React.FC<Props> = ({ place }) => {
   };
 
   return (
-    <div className="border rounded p-3 shadow-sm hover:shadow-md cursor-pointer mb-2 flex flex-col gap-2 h-full overflow-hidden">
+    <div className="border rounded p-3 shadow-sm hover:shadow-md cursor-pointer mb-2 flex flex-col justify-between gap-2 h-full overflow-hidden">
       <div className="flex items-center gap-4">
         {iconUrl && (
           <img
@@ -57,6 +62,7 @@ export const PlaceCard: React.FC<Props> = ({ place }) => {
           </p>
         </div>
       </div>
+
 
       <button
         onClick={handleGetDirections}
