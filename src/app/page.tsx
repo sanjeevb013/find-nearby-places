@@ -84,8 +84,8 @@ const Home: NextPage = () => {
             </p>
 
              {weatherSuccess && (
-      <div className="bg-blue-100 rounded-xl p-4 my-4 w-full max-w-md shadow-md">
-        <h2 className="text-lg font-semibold text-blue-800 mb-2">Current Weather</h2>
+      <div className="rounded-xl  w-full ">
+        <h2 className="text-lg font-semibold text-white-800 mb-2">Current Weather</h2>
         <div className="flex items-center gap-4">
           <img
             src={`https://openweathermap.org/img/wn/${weatherSuccess.weather[0].icon}@2x.png`}
