@@ -81,7 +81,7 @@ const Home: NextPage = () => {
 
             <div className="grid md:grid-cols-2 gap-6 mt-6 h-full w-full">
               <PlaceList places={places} query={query}/>
-              <MapView   places={places} center={coords} />
+              <MapView   places={places} center={coords} userLocation={[coords[0],coords[1]]}/>
             </div>
           </>
         )}
