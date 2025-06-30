@@ -10,6 +10,7 @@ import { fetchPlaces, selectAllPlaces } from '../app/features/places/PlacesSlice
 import { useAppDispatch, useAppSelector } from '../app/lib/hooks';
 import { getCurrentLocation } from './utils/getLocation';
 import { fetchAddress } from './features/currentAddress/currentAddressSLice';
+import { fetchWeather } from './features/weather/weatherSlice';
 
 const Home: NextPage = () => {
   const dispatch = useAppDispatch();
@@ -23,6 +24,7 @@ const Home: NextPage = () => {
   const places       = useAppSelector(selectAllPlaces);
   const {status,error} = useAppSelector((s) => s.places);
     const {currentAddress,addressStatus,addressError} = useAppSelector((s) => s.address);
+      const {weatherSuccess,weatherStatus,weatherError} = useAppSelector((s) => s.weather);
 
   /* Detect location, then fire the thunk */
   const handleDetectLocation = async () => {
@@ -31,7 +33,8 @@ const Home: NextPage = () => {
       const pos   = await getCurrentLocation();
       const next  = [pos.coords.latitude, pos.coords.longitude] as [number, number];
       setCoords(next);
-      // immediately pull nearby places for the initial chip
+
+      dispatch(fetchWeather({lat: next[0], lng: next[1]}))
        dispatch(fetchAddress({ lat: next[0], lng: next[1]}));
       dispatch(fetchPlaces({ lat: next[0], lng: next[1], query, limit: 15 }));
     } catch (err) {
@@ -74,11 +77,32 @@ const Home: NextPage = () => {
 
         {coords && (
           <>
+          <div className='flex'>
             <p>
               Location detected:&nbsp;
               <strong>{currentAddress?.display_name}</strong>
             </p>
 
+             {weatherSuccess && (
+      <div className="bg-blue-100 rounded-xl p-4 my-4 w-full max-w-md shadow-md">
+        <h2 className="text-lg font-semibold text-blue-800 mb-2">Current Weather</h2>
+        <div className="flex items-center gap-4">
+          <img
+            src={`https://openweathermap.org/img/wn/${weatherSuccess.weather[0].icon}@2x.png`}
+            alt={weatherSuccess.weather[0].description}
+            className="w-16 h-16"
+          />
+          <div>
+            <p className="text-2xl font-bold">
+              {Math.round(weatherSuccess.main.temp)}°C
+            </p>
+            <p className="capitalize text-gray-700">{weatherSuccess.weather[0].description}</p>
+            <p className="text-sm text-gray-600">Humidity: {weatherSuccess.main.humidity}%</p>
+          </div>
+        </div>
+      </div>
+    )}
+    </div>
             <div className="grid md:grid-cols-2 gap-6 mt-6 h-full w-full">
               <PlaceList places={places} query={query}/>
               <MapView   places={places} center={coords} userLocation={[coords[0],coords[1]]}/>
