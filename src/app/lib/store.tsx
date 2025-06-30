@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import placesReducer from '../features/places/PlacesSlice';
 import { placesApi } from '../features/places/PlacesApi';
+import currentAddressReducer from '../features/currentAddress/currentAddressSLice'
 
 export const store = configureStore({
   reducer: {
     places: placesReducer,
+    address:currentAddressReducer,
     [placesApi.reducerPath]: placesApi.reducer,
   },
   middleware: (getDefault) => getDefault().concat(placesApi.middleware),

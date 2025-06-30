@@ -9,6 +9,7 @@ import { MapView }     from './components/MapView';
 import { fetchPlaces, selectAllPlaces } from '../app/features/places/PlacesSlice';
 import { useAppDispatch, useAppSelector } from '../app/lib/hooks';
 import { getCurrentLocation } from './utils/getLocation';
+import { fetchAddress } from './features/currentAddress/currentAddressSLice';
 
 const Home: NextPage = () => {
   const dispatch = useAppDispatch();
@@ -20,8 +21,8 @@ const Home: NextPage = () => {
 
   /** ---- redux state ---- */
   const places       = useAppSelector(selectAllPlaces);
-  const placesStatus = useAppSelector((s) => s.places.status);
-  const placesError  = useAppSelector((s) => s.places.error);
+  const {status,error} = useAppSelector((s) => s.places);
+    const {currentAddress,addressStatus,addressError} = useAppSelector((s) => s.address);
 
   /* Detect location, then fire the thunk */
   const handleDetectLocation = async () => {
@@ -29,9 +30,9 @@ const Home: NextPage = () => {
     try {
       const pos   = await getCurrentLocation();
       const next  = [pos.coords.latitude, pos.coords.longitude] as [number, number];
-      localStorage.setItem("userLocation", JSON.stringify(next));
       setCoords(next);
       // immediately pull nearby places for the initial chip
+       dispatch(fetchAddress({ lat: next[0], lng: next[1]}));
       dispatch(fetchPlaces({ lat: next[0], lng: next[1], query, limit: 15 }));
     } catch (err) {
       alert('Failed to detect location');
@@ -39,7 +40,7 @@ const Home: NextPage = () => {
     }
     setLocLoading(false);
   };
-  console.log(coords,"hhh")
+  
   /* Chip click → update query and call the thunk */
   const handleQueryClick = (nextQuery: string) => {
     if (!coords) {
@@ -75,7 +76,7 @@ const Home: NextPage = () => {
           <>
             <p>
               Location detected:&nbsp;
-              <strong>{coords[0].toFixed(4)}, {coords[1].toFixed(4)}</strong>
+              <strong>{currentAddress?.display_name}</strong>
             </p>
 
             <div className="grid md:grid-cols-2 gap-6 mt-6 h-full w-full">
@@ -86,8 +87,8 @@ const Home: NextPage = () => {
         )}
 
         {/* feedback */}
-        {placesStatus === 'loading' && <p className="mt-4">Loading places…</p>}
-        {placesError && <p className="text-red-600">{placesError}</p>}
+        {status === 'loading' && <p className="mt-4">Loading places…</p>}
+        {error && <p className="text-red-600">{error}</p>}
       </div>
     </main>
   );

@@ -20,25 +20,20 @@ export const PlaceCard: React.FC<Props> = ({ place }) => {
     }
 
     try {
-      const next = localStorage.getItem('userLocation')
-      console.log(next)
-    if (next) {
-     const [userLat, userLng] = JSON.parse(next) as [number, number];
-      console.log("Latitude:", userLat);
-      console.log("Longitude:", userLng);
-} else {
-  console.error("No location data found in localStorage");
-}
-      // console.log(userLat, userLng, next)
+         const pos   = await getCurrentLocation();
+            const next  = [pos.coords.latitude, pos.coords.longitude] as [number, number];
+            let userLat=next[0]
+            let userLng=next[1]
+
       const destinationLat = place.geocodes?.main?.latitude;
       const destinationLng = place.geocodes?.main?.longitude;
 
-      // if (userLat && userLng && destinationLat && destinationLng) {
-      //   const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLat},${userLng}&destination=${destinationLat},${destinationLng}`;
-      //   window.open(mapsUrl, '_blank');
-      // } else {
-      //   alert('Destination coordinates not available.');
-      // }
+      if (userLat && userLng && destinationLat && destinationLng) {
+        const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLat},${userLng}&destination=${destinationLat},${destinationLng}`;
+        window.open(mapsUrl, '_blank');
+      } else {
+        alert('Destination coordinates not available.');
+      }
     } catch (error) {
       console.error(error);
       alert('Failed to get your location. Please allow location access.');
