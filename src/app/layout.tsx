@@ -18,8 +18,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <ReduxProvider>
         <ThemeProvider>
-          <div className="page-container">
             <Navbar />
+          <div className="page-container">
             <Container>{children}</Container>
           </div>
           <Footer />

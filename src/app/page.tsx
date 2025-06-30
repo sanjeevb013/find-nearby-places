@@ -9,6 +9,7 @@ import { MapView }     from './components/MapView';
 import { fetchPlaces, selectAllPlaces } from '../app/features/places/PlacesSlice';
 import { useAppDispatch, useAppSelector } from '../app/lib/hooks';
 import { getCurrentLocation } from './utils/getLocation';
+import { fetchAddress } from './features/currentAddress/currentAddressSLice';
 
 const Home: NextPage = () => {
   const dispatch = useAppDispatch();
@@ -20,8 +21,8 @@ const Home: NextPage = () => {
 
   /** ---- redux state ---- */
   const places       = useAppSelector(selectAllPlaces);
-  const placesStatus = useAppSelector((s) => s.places.status);
-  const placesError  = useAppSelector((s) => s.places.error);
+  const {status,error} = useAppSelector((s) => s.places);
+    const {currentAddress,addressStatus,addressError} = useAppSelector((s) => s.address);
 
   /* Detect location, then fire the thunk */
   const handleDetectLocation = async () => {
@@ -31,6 +32,7 @@ const Home: NextPage = () => {
       const next  = [pos.coords.latitude, pos.coords.longitude] as [number, number];
       setCoords(next);
       // immediately pull nearby places for the initial chip
+       dispatch(fetchAddress({ lat: next[0], lng: next[1]}));
       dispatch(fetchPlaces({ lat: next[0], lng: next[1], query, limit: 15 }));
     } catch (err) {
       alert('Failed to detect location');
@@ -38,7 +40,7 @@ const Home: NextPage = () => {
     }
     setLocLoading(false);
   };
-
+  
   /* Chip click → update query and call the thunk */
   const handleQueryClick = (nextQuery: string) => {
     if (!coords) {
@@ -48,7 +50,6 @@ const Home: NextPage = () => {
     setQuery(nextQuery);
     dispatch(fetchPlaces({ lat: coords[0], lng: coords[1], query: nextQuery, limit: 15 }));
   };
-
   return (
     <main className="flex-1 overflow-y-auto p-4 w-full">
       <h1 className="text-3xl font-bold mb-6 text-center">Nearby Places Finder 🌍</h1>
@@ -75,19 +76,19 @@ const Home: NextPage = () => {
           <>
             <p>
               Location detected:&nbsp;
-              <strong>{coords[0].toFixed(4)}, {coords[1].toFixed(4)}</strong>
+              <strong>{currentAddress?.display_name}</strong>
             </p>
 
             <div className="grid md:grid-cols-2 gap-6 mt-6 h-full w-full">
-              <PlaceList places={places} />
+              <PlaceList places={places} query={query}/>
               <MapView   places={places} center={coords} />
             </div>
           </>
         )}
 
         {/* feedback */}
-        {placesStatus === 'loading' && <p className="mt-4">Loading places…</p>}
-        {placesError && <p className="text-red-600">{placesError}</p>}
+        {status === 'loading' && <p className="mt-4">Loading places…</p>}
+        {error && <p className="text-red-600">{error}</p>}
       </div>
     </main>
   );

@@ -37,7 +37,7 @@ const FitBoundsToMarkers: React.FC<{ places: Place[] }> = ({ places }) => {
 
 export const MapView: React.FC<Props> = ({ places, center }) => {
   return (
-    <MapContainer center={center} zoom={14} scrollWheelZoom={false} style={{ height: '600px', width: '100%' }}>
+    <MapContainer center={center} zoom={20} scrollWheelZoom={false} style={{ height: '600px', width: '100%' }}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       {places.map((place) => (
         <Marker
