@@ -5,9 +5,9 @@ import type { Place } from './types';
 export const placesApi = createApi({
   reducerPath: 'placesApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://api.foursquare.com/v3/',
+    baseUrl: 'https://places-api.foursquare.com/v3/v3/',
     prepareHeaders: (headers) => {
-      headers.set('Authorization', process.env.NEXT_PUBLIC_FOURSQUARE_API_KEY!);
+      headers.set('Authorization', "Bearer RXQK0UKL2YB5LDSDDXNFH1MMROLQBWSTCVWU4QYUKBXRJXMT");
       return headers;
     },
   }),

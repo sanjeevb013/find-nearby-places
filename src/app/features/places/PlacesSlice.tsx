@@ -3,24 +3,41 @@ import axios from 'axios';
 import type { RootState } from '../../lib/store';
 import { Place, PlaceDetails } from './types';
 
-const BASE_URL = 'https://api.foursquare.com/v3/';
+const BASE_URL = 'api/foursquare';
 
 export const fetchPlaces = createAsyncThunk<
   Place[],
   { lat: number; lng: number; query: string; limit?: number },
   { rejectValue: string }
 >('places/fetch', async ({ lat, lng, query, limit = 10 }, { rejectWithValue }) => {
+  const cacheKey = `places_${query.toLowerCase()}`; // You can include lat/lng if needed for precision
+
   try {
-    
-    const { data } = await axios.get<{ results: Place[] }>(`${BASE_URL}places/search`, {
+    // 1. Check if data already exists in localStorage
+    const cachedData = localStorage.getItem(cacheKey);
+    if (cachedData) {
+      return JSON.parse(cachedData) as Place[];
+    }
+
+    // 2. Make API call if not cached
+    const { data } = await axios.get<{ results: Place[] }>(`${BASE_URL}`, {
       params: { ll: `${lat},${lng}`, query, limit },
-      headers: { Authorization: "fsq30Q8i/eVynXTu8TMtSPJ9/MHzG+o3+82B6zyDX/n7UK0=" },
+      headers: {
+        accept: 'application/json',
+        'X-Places-Api-Version': '2025-06-17',
+        Authorization:"Bearer CUKPYATYQR0GDWIZDMWQHTNEILBDRBY5T2F5NLBUZ2GGHFWY"
+      },
     });
+
+    // 3. Store result in localStorage
+    localStorage.setItem(cacheKey, JSON.stringify(data.results));
+
     return data.results;
   } catch (e: any) {
     return rejectWithValue(e.response?.data?.message ?? e.message);
   }
 });
+
 
 // 2️⃣  DETAILS BY ID 
 export const fetchPlaceDetails = createAsyncThunk<PlaceDetails, string, { rejectValue: string }>('places/fetchById', async (fsqId, { rejectWithValue }) => {
@@ -98,7 +115,7 @@ const placesSlice = createSlice({
       }),
 });
 
-export const { selectPlace } = placesSlice.actions;
+export const { selectPlace, clearDetails } = placesSlice.actions;
 export default placesSlice.reducer;
 
 // selectors

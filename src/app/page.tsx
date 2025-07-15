@@ -1,6 +1,6 @@
 "use client";
 import type { NextPage } from 'next';
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { PlaceList }   from './components/PlaceLIst';
 import { LocationButton } from './components/LocationButton';
@@ -11,10 +11,12 @@ import { useAppDispatch, useAppSelector } from '../app/lib/hooks';
 import { getCurrentLocation } from './utils/getLocation';
 import { fetchAddress } from './features/currentAddress/currentAddressSLice';
 import { fetchWeather } from './features/weather/weatherSlice';
+import { ThemeContext } from './context/ThemeContext';
+import weatherBg from './assets/images/weatherbg.jpg';
 
 const Home: NextPage = () => {
   const dispatch = useAppDispatch();
-
+  const { theme, toggleTheme } = useContext(ThemeContext)
   /** ---- local-only state ---- */
   const [coords, setCoords]     = useState<[number, number] | null>(null);
   const [locLoading, setLocLoading] = useState(false);
@@ -54,7 +56,7 @@ const Home: NextPage = () => {
     dispatch(fetchPlaces({ lat: coords[0], lng: coords[1], query: nextQuery, limit: 15 }));
   };
   return (
-    <main className="flex-1 overflow-y-auto p-4 w-full">
+<main className={`flex-1 overflow-y-auto p-4 w-full bg-cover bg-center ${theme === "dark" ? 'bg-image':'null'}`}>
       <h1 className="text-3xl font-bold mb-6 text-center">Nearby Places Finder 🌍</h1>
 
       <div className="flex flex-col items-center gap-4 mb-6">
@@ -77,15 +79,10 @@ const Home: NextPage = () => {
 
         {coords && (
           <>
-          <div className='flex'>
-            <p>
-              Location detected:&nbsp;
-              <strong>{currentAddress?.display_name}</strong>
-            </p>
-
-             {weatherSuccess && (
-      <div className="rounded-xl  w-full ">
-        <h2 className="text-lg font-semibold text-white-800 mb-2">Current Weather</h2>
+          <div className={`flex items-center w-[100vw] pr-10 pl-2 bg-cover bg-center justify-between`}  >
+                     {weatherSuccess && (
+      <div className="rounded-xl">
+        <h2 className="text-lg font-semibold text-white-800 mb-2 text-center">Weather</h2>
         <div className="flex items-center gap-4">
           <img
             src={`https://openweathermap.org/img/wn/${weatherSuccess.weather[0].icon}@2x.png`}
@@ -102,6 +99,11 @@ const Home: NextPage = () => {
         </div>
       </div>
     )}
+            <p>
+              Location detected:&nbsp;
+              <strong>{currentAddress?.display_name}</strong>
+            </p>
+
     </div>
             <div className="grid md:grid-cols-2 gap-6 mt-6 h-full w-full">
               <PlaceList places={places} query={query}/>

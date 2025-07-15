@@ -54,3 +54,10 @@ body {
     animation-play-state: paused;
   }
 }
+
+.bg-image{
+  background-image: url('./assets//images/darkEartth.jpg');
+  background-size: cover;       /* or 'contain' */
+  background-position:top 10px;
+  background-repeat: no-repeat;         
+}
