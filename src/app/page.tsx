@@ -56,7 +56,7 @@ const Home: NextPage = () => {
     dispatch(fetchPlaces({ lat: coords[0], lng: coords[1], query: nextQuery, limit: 15 }));
   };
   return (
-<main className={`flex-1 overflow-y-auto p-4 w-full bg-cover bg-center ${theme === "dark" ? 'bg-image':'null'}`}>
+<main className={`flex-1 overflow-y-auto p-4 w-full bg-cover bg-center overflow-hidden ${theme === "dark" && coords ? 'bg-image':'light-bg-image'}`}>
       <h1 className="text-3xl font-bold mb-6 text-center">Nearby Places Finder 🌍</h1>
 
       <div className="flex flex-col items-center gap-4 mb-6">

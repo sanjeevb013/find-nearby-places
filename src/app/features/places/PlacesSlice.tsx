@@ -3,7 +3,7 @@ import axios from 'axios';
 import type { RootState } from '../../lib/store';
 import { Place, PlaceDetails } from './types';
 
-const BASE_URL = 'api/foursquare';
+const BASE_URL = 'https://api.foursquare.com/v3';
 
 export const fetchPlaces = createAsyncThunk<
   Place[],
@@ -11,21 +11,18 @@ export const fetchPlaces = createAsyncThunk<
   { rejectValue: string }
 >('places/fetch', async ({ lat, lng, query, limit = 10 }, { rejectWithValue }) => {
   const cacheKey = `places_${query.toLowerCase()}`; // You can include lat/lng if needed for precision
-
   try {
     // 1. Check if data already exists in localStorage
     const cachedData = localStorage.getItem(cacheKey);
     if (cachedData) {
       return JSON.parse(cachedData) as Place[];
     }
-
-    // 2. Make API call if not cached
     const { data } = await axios.get<{ results: Place[] }>(`${BASE_URL}`, {
       params: { ll: `${lat},${lng}`, query, limit },
       headers: {
         accept: 'application/json',
         'X-Places-Api-Version': '2025-06-17',
-        Authorization:"Bearer CUKPYATYQR0GDWIZDMWQHTNEILBDRBY5T2F5NLBUZ2GGHFWY"
+        Authorization:`Bearer ${process.env.NEXT_PUBLIC_FOURSQUARE_API_KEY}`
       },
     });
 
