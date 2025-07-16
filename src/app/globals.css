@@ -55,10 +55,6 @@ body {
   }
 }
 
-.bg-image {
-  position: relative;
-  overflow: hidden;
-}
 .light-bg-image {
   position: relative;
   overflow: hidden;
@@ -74,6 +70,11 @@ body {
   background-position: center;
   filter: blur(3px);
   z-index: -1;
+}
+
+.bg-image {
+  position: relative;
+  overflow: hidden;
 }
 
 .bg-image::before {
