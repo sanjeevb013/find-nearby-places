@@ -1,11 +1,10 @@
 import './globals.css'
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
-import Container from './components/Container'
 import ThemeProvider from './context/ThemeContext' // Import this
 import { ReactNode } from 'react'
 import type { Metadata } from 'next'
 import ReduxProvider from './providers/ReduxProvider'
+import { AuthProvider } from './context/AuthContext'; 
+import { Toaster } from 'react-hot-toast'
 
 export const metadata: Metadata = {
   title: 'My Next App',
@@ -18,11 +17,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <ReduxProvider>
         <ThemeProvider>
-            <Navbar />
-          <div className="page-container">
-            <Container>{children}</Container>
-          </div>
-          <Footer />
+           <AuthProvider>        
+            {children}
+              <Toaster position="top-center" reverseOrder={false} />
+          </AuthProvider>
         </ThemeProvider>
         </ReduxProvider>
       </body>

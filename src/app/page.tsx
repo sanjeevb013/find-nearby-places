@@ -1,6 +1,6 @@
 "use client";
 import type { NextPage } from 'next';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 
 import { PlaceList }   from './components/PlaceLIst';
 import { LocationButton } from './components/LocationButton';
@@ -12,6 +12,7 @@ import { getCurrentLocation } from './utils/getLocation';
 import { fetchAddress } from './features/currentAddress/currentAddressSLice';
 import { fetchWeather } from './features/weather/weatherSlice';
 import { ThemeContext } from './context/ThemeContext';
+import ProtectedLayout from './components/ProtectedLayout';
 
 const Home: NextPage = () => {
   const dispatch = useAppDispatch();
@@ -45,7 +46,6 @@ const Home: NextPage = () => {
     setLocLoading(false);
   };
   
-  /* Chip click → update query and call the thunk */
   const handleQueryClick = (nextQuery: string) => {
     if (!coords) {
       alert('Please detect your location first.');
@@ -54,9 +54,11 @@ const Home: NextPage = () => {
     setQuery(nextQuery);
     dispatch(fetchPlaces({ lat: coords[0], lng: coords[1], query: nextQuery, limit: 15 }));
   };
-  console.log(theme)
   return (
-<main className={`flex-1 overflow-y-auto p-4 w-full bg-cover bg-center overflow-hidden ${theme === "dark" && coords ? 'bg-image': theme === "light" && coords ? 'light-bg-image ':"null"}`}>
+    <>
+        <ProtectedLayout>
+    <main className={`flex-1 overflow-y-auto p-4 w-full bg-cover bg-center overflow-hidden ${theme === "dark" && coords ? 'bg-image': theme === "light" && coords ? 'light-bg-image ':"null"}`}>
+     
       <h1 className="text-3xl font-bold mb-6 text-center">Nearby Places Finder 🌍</h1>
 
       <div className="flex flex-col items-center gap-4 mb-6">
@@ -117,6 +119,8 @@ const Home: NextPage = () => {
         {error && <p className="text-red-600">{error}</p>}
       </div>
     </main>
+        </ProtectedLayout>
+    </>
   );
 };
 
