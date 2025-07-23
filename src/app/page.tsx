@@ -12,7 +12,6 @@ import { getCurrentLocation } from './utils/getLocation';
 import { fetchAddress } from './features/currentAddress/currentAddressSLice';
 import { fetchWeather } from './features/weather/weatherSlice';
 import { ThemeContext } from './context/ThemeContext';
-import weatherBg from './assets/images/weatherbg.jpg';
 
 const Home: NextPage = () => {
   const dispatch = useAppDispatch();
@@ -23,11 +22,11 @@ const Home: NextPage = () => {
   const [query, setQuery]       = useState('restaurant');
 
   /** ---- redux state ---- */
-  const places       = useAppSelector(selectAllPlaces);
+  const places = useAppSelector(selectAllPlaces);
   const {status,error} = useAppSelector((s) => s.places);
     const {currentAddress,addressStatus,addressError} = useAppSelector((s) => s.address);
       const {weatherSuccess,weatherStatus,weatherError} = useAppSelector((s) => s.weather);
-
+  console.log(places,"hahahhahaahha")
   /* Detect location, then fire the thunk */
   const handleDetectLocation = async () => {
     setLocLoading(true);

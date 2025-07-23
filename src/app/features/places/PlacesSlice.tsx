@@ -3,37 +3,50 @@ import axios from 'axios';
 import type { RootState } from '../../lib/store';
 import { Place, PlaceDetails } from './types';
 
-const BASE_URL = 'https://api.foursquare.com/v3';
+const BASE_URL = 'https://places-api.foursquare.com';
+
 
 export const fetchPlaces = createAsyncThunk<
   Place[],
   { lat: number; lng: number; query: string; limit?: number },
   { rejectValue: string }
->('places/fetch', async ({ lat, lng, query, limit = 10 }, { rejectWithValue }) => {
-  const cacheKey = `places_${query.toLowerCase()}`; // You can include lat/lng if needed for precision
-  try {
-    // 1. Check if data already exists in localStorage
-    const cachedData = localStorage.getItem(cacheKey);
-    if (cachedData) {
-      return JSON.parse(cachedData) as Place[];
+>(
+  'places/fetch',
+  async ({ lat, lng, query, limit = 10 }, { rejectWithValue }) => {
+    const cacheKey = `places_${query.toLowerCase()}`;
+    const cacheTTL = 1000 * 60 * 60; // 1 hour
+
+    try {
+      const cachedEntry = localStorage.getItem(cacheKey);
+      if (cachedEntry) {
+        const { timestamp, data } = JSON.parse(cachedEntry);
+        const now = Date.now();
+
+        if (now - timestamp < cacheTTL) {
+          return data as Place[];
+        } else {
+          // Expired cache, remove it
+          localStorage.removeItem(cacheKey);
+        }
+      }
+
+      const { data } = await axios.get<{ results: Place[] }>('/api/foursquare', {
+        params: { lat, lng, query, limit },
+      });
+
+      // Cache with timestamp
+      localStorage.setItem(
+        cacheKey,
+        JSON.stringify({ timestamp: Date.now(), data: data.results })
+      );
+
+      return data.results;
+    } catch (e: any) {
+      return rejectWithValue(e.response?.data?.message ?? e.message);
     }
-    const { data } = await axios.get<{ results: Place[] }>(`${BASE_URL}`, {
-      params: { ll: `${lat},${lng}`, query, limit },
-      headers: {
-        accept: 'application/json',
-        'X-Places-Api-Version': '2025-06-17',
-        Authorization:`Bearer ${process.env.NEXT_PUBLIC_FOURSQUARE_API_KEY}`
-      },
-    });
-
-    // 3. Store result in localStorage
-    localStorage.setItem(cacheKey, JSON.stringify(data.results));
-
-    return data.results;
-  } catch (e: any) {
-    return rejectWithValue(e.response?.data?.message ?? e.message);
   }
-});
+);
+
 
 
 // 2️⃣  DETAILS BY ID 
@@ -117,6 +130,6 @@ export default placesSlice.reducer;
 
 // selectors
 export const selectAllPlaces = (state: RootState) => state.places.items;
-export const selectPlaceById = (id: string) => (state: RootState) =>
-  state.places.items.find((p) => p.fsq_id === id);
+// export const selectPlaceById = (id: string) => (state: RootState) =>
+//   state.places.items.find((p) => p.fsq_place_id === id);
 export const selectPlaceDetail = (state: RootState) => state.places.placeDetail;

@@ -1,6 +1,6 @@
 
 import React, {useEffect, useState } from 'react';
-import { Place } from '../utils/foursquareApi';
+import { Place } from '../features/places/types';
 import { PlaceCard } from './PlaceCard';
 import { useAppDispatch } from '../lib/hooks';
 import { fetchPlaceDetails } from '../features/places/PlacesSlice';
@@ -34,9 +34,9 @@ export const PlaceList: React.FC<Props> = ({ places, query }) => {
   };
   return (
     <div>
-      <div className="overflow-y-auto h-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2">
+      <div className="overflow-y-auto h-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-2 gap-2">
         {sortedPlaces.slice(0, visibleCount).map((place) => (
-          <div key={place.fsq_id} onClick={() => handleData(place.fsq_id)}>
+          <div key={place.fsq_place_id} onClick={() => handleData(place.fsq_place_id)}>
             <PlaceCard place={place} />
           </div>
         ))}
