@@ -100,3 +100,10 @@ body {
     transform: rotate(360deg);
   }
 }
+
+.bg-dark-color{
+   background: linear-gradient(to right, #1f2937, #4b5563, #18181b);
+}
+.bg-light-color {
+  background: linear-gradient(to right, #d6d7da, #ffffff, #e5e6e7);
+}
