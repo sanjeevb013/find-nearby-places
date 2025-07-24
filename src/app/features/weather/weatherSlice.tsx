@@ -19,6 +19,14 @@ export const fetchWeather = createAsyncThunk<
   { lat: number; lng: number },
   { rejectValue: string }
 >("weather/fetchWeather", async ({ lat, lng }, { rejectWithValue }) => {
+  const cacheKey = `weather_${lat}_${lng}`;
+  const cached = localStorage.getItem(cacheKey);
+
+  if (cached) {
+    console.log("✅ Using cached weather data");
+    return JSON.parse(cached);
+  }
+
   try {
     const { data } = await axios.get<WeatherResponse>(
       "https://api.openweathermap.org/data/2.5/weather",
@@ -32,11 +40,13 @@ export const fetchWeather = createAsyncThunk<
       }
     );
 
+    localStorage.setItem(cacheKey, JSON.stringify(data));
     return data;
   } catch (e: any) {
     return rejectWithValue(e.response?.data?.message ?? e.message);
   }
 });
+
 interface AddressState {
   weatherSuccess: WeatherResponse | null;
   weatherStatus: 'idle' | 'loading' | 'succeeded' | 'failed';

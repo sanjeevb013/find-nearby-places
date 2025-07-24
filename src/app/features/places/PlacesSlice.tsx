@@ -3,24 +3,51 @@ import axios from 'axios';
 import type { RootState } from '../../lib/store';
 import { Place, PlaceDetails } from './types';
 
-const BASE_URL = 'https://api.foursquare.com/v3/';
+const BASE_URL = 'https://places-api.foursquare.com';
+
 
 export const fetchPlaces = createAsyncThunk<
   Place[],
   { lat: number; lng: number; query: string; limit?: number },
   { rejectValue: string }
->('places/fetch', async ({ lat, lng, query, limit = 10 }, { rejectWithValue }) => {
-  try {
-    
-    const { data } = await axios.get<{ results: Place[] }>(`${BASE_URL}places/search`, {
-      params: { ll: `${lat},${lng}`, query, limit },
-      headers: { Authorization: "fsq30Q8i/eVynXTu8TMtSPJ9/MHzG+o3+82B6zyDX/n7UK0=" },
-    });
-    return data.results;
-  } catch (e: any) {
-    return rejectWithValue(e.response?.data?.message ?? e.message);
+>(
+  'places/fetch',
+  async ({ lat, lng, query, limit = 10 }, { rejectWithValue }) => {
+    const cacheKey = `places_${query.toLowerCase()}`;
+    const cacheTTL = 1000 * 60 * 60; // 1 hour
+
+    try {
+      const cachedEntry = localStorage.getItem(cacheKey);
+      if (cachedEntry) {
+        const { timestamp, data } = JSON.parse(cachedEntry);
+        const now = Date.now();
+
+        if (now - timestamp < cacheTTL) {
+          return data as Place[];
+        } else {
+          // Expired cache, remove it
+          localStorage.removeItem(cacheKey);
+        }
+      }
+
+      const { data } = await axios.get<{ results: Place[] }>('/api/foursquare', {
+        params: { lat, lng, query, limit },
+      });
+
+      // Cache with timestamp
+      localStorage.setItem(
+        cacheKey,
+        JSON.stringify({ timestamp: Date.now(), data: data.results })
+      );
+
+      return data.results;
+    } catch (e: any) {
+      return rejectWithValue(e.response?.data?.message ?? e.message);
+    }
   }
-});
+);
+
+
 
 // 2️⃣  DETAILS BY ID 
 export const fetchPlaceDetails = createAsyncThunk<PlaceDetails, string, { rejectValue: string }>('places/fetchById', async (fsqId, { rejectWithValue }) => {
@@ -98,11 +125,11 @@ const placesSlice = createSlice({
       }),
 });
 
-export const { selectPlace } = placesSlice.actions;
+export const { selectPlace, clearDetails } = placesSlice.actions;
 export default placesSlice.reducer;
 
 // selectors
 export const selectAllPlaces = (state: RootState) => state.places.items;
-export const selectPlaceById = (id: string) => (state: RootState) =>
-  state.places.items.find((p) => p.fsq_id === id);
+// export const selectPlaceById = (id: string) => (state: RootState) =>
+//   state.places.items.find((p) => p.fsq_place_id === id);
 export const selectPlaceDetail = (state: RootState) => state.places.placeDetail;

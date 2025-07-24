@@ -14,6 +14,14 @@ export const fetchAddress = createAsyncThunk<
   { lat: number; lng: number },
   { rejectValue: string }
 >("address", async ({ lat, lng }, { rejectWithValue }) => {
+  const cacheKey = `address_${lat}_${lng}`;
+  const cached = localStorage.getItem(cacheKey);
+
+  if (cached) {
+    console.log("🟡 Using cached address");
+    return JSON.parse(cached);
+  }
+
   try {
     const { data } = await axios.get<NominatimResponse>(
       "https://nominatim.openstreetmap.org/reverse",
@@ -24,17 +32,19 @@ export const fetchAddress = createAsyncThunk<
           format: "jsonv2",
         },
         headers: {
-          // Nominatim requires a valid User-Agent header
+          // Required by Nominatim
           "User-Agent": "YourAppName/1.0 (your@email.com)",
         },
       }
     );
 
+    localStorage.setItem(cacheKey, JSON.stringify(data));
     return data;
   } catch (e: any) {
     return rejectWithValue(e.response?.data?.error ?? e.message);
   }
 });
+
 
 interface AddressState {
   currentAddress: NominatimResponse | null;

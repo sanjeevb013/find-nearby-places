@@ -1,13 +1,13 @@
-import React from 'react';
-import { Place } from '../utils/foursquareApi';
+import React, { useContext } from 'react';
+import { Place } from '../features/places/types';
 import { getCurrentLocation } from '../utils/getLocation';
-
+import { ThemeContext } from '../context/ThemeContext';
 interface Props {
   place: Place;
-  next:[];
 }
 
 export const PlaceCard: React.FC<Props> = ({ place }) => {
+      const { theme, toggleTheme } = useContext(ThemeContext)
   const category = place.categories?.[0];
   const iconUrl = category
     ? `${category.icon.prefix}64${category.icon.suffix}`
@@ -20,13 +20,11 @@ export const PlaceCard: React.FC<Props> = ({ place }) => {
     }
 
     try {
-         const pos   = await getCurrentLocation();
-            const next  = [pos.coords.latitude, pos.coords.longitude] as [number, number];
-            let userLat=next[0]
-            let userLng=next[1]
+      const pos = await getCurrentLocation();
+      const [userLat, userLng] = [pos.coords.latitude, pos.coords.longitude];
 
-      const destinationLat = place.geocodes?.main?.latitude;
-      const destinationLng = place.geocodes?.main?.longitude;
+      const destinationLat = place.latitude;
+      const destinationLng = place.longitude;
 
       if (userLat && userLng && destinationLat && destinationLng) {
         const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLat},${userLng}&destination=${destinationLat},${destinationLng}`;
@@ -41,23 +39,26 @@ export const PlaceCard: React.FC<Props> = ({ place }) => {
   };
 
   return (
-    <div className="border rounded p-3 shadow-sm hover:shadow-md cursor-pointer mb-2 flex flex-col justify-between gap-2 h-full overflow-hidden">
+<div
+  className={`border rounded-xl p-4 sm:p-6 transition-shadow duration-300 ease-in-out 
+    shadow-md  cursor-pointer mb-3 flex flex-col justify-between gap-3 h-full overflow-hidden
+   bg-gradient-to-br from-gray-400 to-gray-800 text-white`}
+>
       <div className="flex items-center gap-4">
         {iconUrl && (
           <img
             src={iconUrl}
             alt={category?.name}
-            className="w-8 h-8 bg-gray-400 rounded-[50%] p-1"
+            className="w-8 h-8 rounded-full p-1 "
           />
         )}
         <div>
           <h3 className="text-lg font-semibold">{place.name}</h3>
-          <p className="text-sm text-gray-600">
-            {place?.location?.address ?? 'Address not available'}
+          <p className="text-sm">
+            {place.location?.address ?? 'Address not available'}
           </p>
         </div>
       </div>
-
 
       <button
         onClick={handleGetDirections}

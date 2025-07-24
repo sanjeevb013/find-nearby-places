@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { LatLngBoundsExpression } from 'leaflet';
-import { Place } from '../utils/foursquareApi';
+import { Place } from '../features/places/types';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -24,8 +24,8 @@ const userLocationIcon = new L.Icon({
 
 interface Props {
   places: Place[];
-  center: [number, number]; // center of map and your location
-  userLocation: [number, number]; // your location coordinates
+  center: [number, number];
+  userLocation: [number, number];
 }
 
 // Fit map bounds to all markers
@@ -35,8 +35,8 @@ const FitBoundsToMarkers: React.FC<{ places: Place[] }> = ({ places }) => {
   useEffect(() => {
     if (places.length > 0) {
       const bounds: LatLngBoundsExpression = places.map(place => [
-        place.geocodes.main.latitude,
-        place.geocodes.main.longitude,
+        place.latitude,
+        place.longitude,
       ]);
       map.fitBounds(bounds, { padding: [50, 50] });
     }
@@ -60,8 +60,8 @@ export const MapView: React.FC<Props> = ({ places, center, userLocation }) => {
       {/* Other places */}
       {places.map((place) => (
         <Marker
-          key={place.fsq_id}
-          position={[place.geocodes.main.latitude, place.geocodes.main.longitude]}
+          key={place.fsq_place_id}
+          position={[place.latitude, place.longitude]}
         >
           <Popup>
             <strong>{place.name}</strong>
