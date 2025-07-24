@@ -21,7 +21,7 @@ export default function Login() {
   const [errors, setErrors] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
     const { theme, toggleTheme } = useContext(ThemeContext)
-  console.log(loading)
+
   const validateForm = () => {
     const { email, password } = form;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

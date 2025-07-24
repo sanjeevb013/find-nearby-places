@@ -79,45 +79,43 @@ const Home: NextPage = () => {
             </button>
           ))}
         </div>
-
-        {coords && (
-          <>
-          <div className={`flex items-center w-[100vw] pr-10 pl-2 bg-cover bg-center justify-between`}  >
-                     {weatherSuccess && (
-      <div className="rounded-xl">
-        <h2 className="text-lg font-semibold text-white-800 mb-2 text-center">Weather</h2>
-        <div className="flex items-center gap-4">
-          <img
-            src={`https://openweathermap.org/img/wn/${weatherSuccess.weather[0].icon}@2x.png`}
-            alt={weatherSuccess.weather[0].description}
-            className="w-16 h-16"
-          />
-          <div>
-            <p className="text-2xl font-bold">
-              {Math.round(weatherSuccess.main.temp)}°C
-            </p>
-            <p className="capitalize text-gray-700">{weatherSuccess.weather[0].description}</p>
-            <p className="text-sm text-gray-600">Humidity: {weatherSuccess.main.humidity}%</p>
+{coords && (
+  <>
+    <div className="flex flex-row sm:flex-row items-start sm:items-center justify-between w-full px-4 py-4 bg-cover bg-center gap-4">
+      {weatherSuccess && (
+        <div className="rounded-xl bg-white/80 p-3 w-full sm:w-auto">
+          <h2 className="text-lg font-semibold text-gray-800 mb-2 text-center">Weather</h2>
+          <div className="flex items-center gap-4">
+            <img
+              src={`https://openweathermap.org/img/wn/${weatherSuccess.weather[0].icon}@2x.png`}
+              alt={weatherSuccess.weather[0].description}
+              className="w-12 h-12 sm:w-16 sm:h-16"
+            />
+            <div>
+              <p className="text-xl font-bold text-black">
+                {Math.round(weatherSuccess.main.temp)}°C
+              </p>
+              <p className="capitalize text-black">{weatherSuccess.weather[0].description}</p>
+              <p className="text-sm text-black">Humidity: {weatherSuccess.main.humidity}%</p>
+            </div>
           </div>
         </div>
-      </div>
-    )}
-            <p>
-              Location detected:&nbsp;
-              <strong>{currentAddress?.display_name}</strong>
-            </p>
-
+      )}
+      <p className="text-sm text-white bg-black/60 px-3 py-2 rounded w-full sm:w-auto">
+        Location detected:&nbsp;
+        <strong>{currentAddress?.display_name}</strong>
+      </p>
     </div>
-            <div className="grid md:grid-cols-2 gap-6 mt-6 h-full w-full">
-              <PlaceList places={places} query={query}/>
-              <MapView   places={places} center={coords} userLocation={[coords[0],coords[1]]}/>
-            </div>
-          </>
-        )}
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 w-full px-4 pb-6">
+      <PlaceList places={places} query={query} />
+      <MapView places={places} center={coords} userLocation={[coords[0], coords[1]]} />
+    </div>
+  </>
+)}
 
         {/* feedback */}
         {status === 'loading' && <p className="mt-4">Loading places…</p>}
-        {error && <p className="text-red-600">{error}</p>}
       </div>
     </main>
         </ProtectedLayout>

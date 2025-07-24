@@ -42,19 +42,19 @@ export const PlaceCard: React.FC<Props> = ({ place }) => {
 <div
   className={`border rounded-xl p-4 sm:p-6 transition-shadow duration-300 ease-in-out 
     shadow-md  cursor-pointer mb-3 flex flex-col justify-between gap-3 h-full overflow-hidden
-    ${theme === 'light' ? 'bg-white text-gray-800' : 'bg-gradient-to-br from-gray-800 to-gray-900 text-white'}`}
+   bg-gradient-to-br from-gray-400 to-gray-800 text-white`}
 >
       <div className="flex items-center gap-4">
         {iconUrl && (
           <img
             src={iconUrl}
             alt={category?.name}
-            className="w-8 h-8 bg-gray-400 rounded-full p-1"
+            className="w-8 h-8 rounded-full p-1 "
           />
         )}
         <div>
           <h3 className="text-lg font-semibold">{place.name}</h3>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm">
             {place.location?.address ?? 'Address not available'}
           </p>
         </div>

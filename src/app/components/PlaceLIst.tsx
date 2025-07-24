@@ -34,7 +34,7 @@ export const PlaceList: React.FC<Props> = ({ places, query }) => {
   };
   return (
     <div>
-      <div className="overflow-y-auto h-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-2 gap-2">
+      <div className="overflow-y-auto h-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-2 gap-2">
         {sortedPlaces.slice(0, visibleCount).map((place) => (
           <div key={place.fsq_place_id} onClick={() => handleData(place.fsq_place_id)}>
             <PlaceCard place={place} />
