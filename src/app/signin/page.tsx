@@ -118,7 +118,7 @@ const SignUp = () => {
             {/* Submit Button */}
             <button
               onClick={handleSignup}
-              className="w-full py-3 rounded-md bg-blue-600 hover:bg-blue-700 text-white transition"
+              className="w-full py-3 rounded-md bg-blue-600 hover:bg-blue-700 text-white transition cursor-pointer"
             >
               Sign Up
             </button>
