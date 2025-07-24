@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
       headers: {
         accept: 'application/json',
         'X-Places-Api-Version': '2025-06-17',
-        Authorization: `Bearer ${"CUKPYATYQR0GDWIZDMWQHTNEILBDRBY5T2F5NLBUZ2GGHFWY"}`,
+        Authorization: `Bearer ${process.env.FOURSQUARE_API_KEY}`,
       },
     });
 

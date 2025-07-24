@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 import Image from 'next/image';
 import Link from 'next/link';
 import Images from '../assets';
-import { Eye, EyeOff} from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { useContext } from 'react';
 import { ThemeContext } from '../context/ThemeContext';
 import { Sun, Moon } from 'lucide-react';
@@ -16,11 +16,11 @@ import Loader from '../components/Loader';
 
 export default function Login() {
   const router = useRouter();
-    const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
-    const { theme, toggleTheme } = useContext(ThemeContext)
+  const { theme, toggleTheme } = useContext(ThemeContext)
 
   const validateForm = () => {
     const { email, password } = form;
@@ -62,13 +62,13 @@ export default function Login() {
       toast.success('Login successful!');
     } catch (error: any) {
       toast.error('Please enter valid credentials');
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className={`min-h-screen flex items-center justify-center px-4 ${theme === 'dark' ? '' :''}`}>
+    <div className={`min-h-screen flex items-center justify-center px-4 ${theme === 'dark' ? '' : ''}`}>
       {!loading ? <div className={` shadow-lg rounded-2xl flex w-full max-w-4xl overflow-hidden ${theme === 'dark' ? 'bg-dark-color' : 'bg-light-color'} `}>
         {/* Left Image Panel */}
         <div className="hidden md:flex flex-col justify-center items-center w-1/2  p-8">
@@ -82,72 +82,71 @@ export default function Login() {
 
         {/* Right Form Panel */}
         <div className="w-full md:w-1/2 p-8 pt-4">
-        
-    <div className='flex justify-between'>
-      <div>
-        <h2 className="text-2xl font-bold mb-2">Near By Places Finder</h2>
-          <p className="text-sm mb-6">Please login or sign up to continue</p>
-      </div>
-      
 
-          <div className="flex justify-end mb-4">
-  <label className="relative inline-flex items-start cursor-pointer">
-    <input
-      type="checkbox"
-      className="sr-only peer"
-      onChange={toggleTheme}
-      checked={theme === 'dark'}
-    />
-    <div className="w-14 h-8 bg-gray-300 peer-checked:bg-blue-600 rounded-full relative transition-colors duration-300">
-      <div
-        className={`absolute top-1 bg-white w-6 h-6 rounded-full transition-all duration-300 transform peer-checked:translate-x-6 ${
-          theme === 'dark' ? `left-[50%]` : `left-[1%]`
-        }`}
-      />
-    </div>
-    <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300 mt-1">
-      {theme === 'light' ? <Sun size={20} color='black' /> : <Moon size={20} color='white' />}
-    </span>
-  </label>
-</div>
+          <div className='flex justify-between'>
+            <div>
+              <h2 className="text-2xl font-bold mb-2">Near By Places Finder</h2>
+              <p className="text-sm mb-6">Please login or sign up to continue</p>
+            </div>
 
-</div>
+
+            <div className="flex justify-end mb-4">
+              <label className="relative inline-flex items-start cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  onChange={toggleTheme}
+                  checked={theme === 'dark'}
+                />
+                <div className="w-14 h-8 bg-gray-300 peer-checked:bg-blue-600 rounded-full relative transition-colors duration-300">
+                  <div
+                    className={`absolute top-1 bg-white w-6 h-6 rounded-full transition-all duration-300 transform peer-checked:translate-x-6 ${theme === 'dark' ? `left-[50%]` : `left-[1%]`
+                      }`}
+                  />
+                </div>
+                <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300 mt-1">
+                  {theme === 'light' ? <Sun size={20} color='black' /> : <Moon size={20} color='white' />}
+                </span>
+              </label>
+            </div>
+
+          </div>
 
           {/* Email Input */}
-        <input
-  type="email"
-  placeholder="Your Email"
-  value={form.email}
-  onChange={(e) => handleChange('email', e.target.value)}
-  className={`w-full px-4 py-3 mb-2 border rounded-md border-grey-500 focus:outline-none focus:ring-2 
+          <input
+            type="email"
+            placeholder="Your Email"
+            value={form.email}
+            onChange={(e) => handleChange('email', e.target.value)}
+            className={`w-full px-4 py-3 mb-2 border rounded-md border-grey-500 focus:outline-none focus:ring-2 
     placeholder-gray-500 dark:placeholder-gray-300
     ${errors.email ? 'border-red-500 focus:ring-red-400' : 'focus:ring-blue-400'}
   `}
-/>
+          />
           {errors.email && <p className="text-red-500 text-sm mb-3">{errors.email}</p>}
 
           {/* Password Input */}
           <div className="relative">
-           <input
-  type={showPassword ? 'text' : 'password'}
-  placeholder="Your Password"
-  value={form.password}
-  onChange={(e) => handleChange('password', e.target.value)}
-  className={`w-full px-4 py-3 pr-12 mb-2 border rounded-md 
+            <input
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Your Password"
+              value={form.password}
+              onChange={(e) => handleChange('password', e.target.value)}
+              className={`w-full px-4 py-3 pr-12 mb-2 border rounded-md 
     placeholder-gray-500 dark:placeholder-gray-300
     focus:outline-none focus:ring-2 
-    ${errors.password 
-      ? 'border-red-500 focus:ring-red-400 dark:focus:ring-red-400' 
-      : ' focus:ring-blue-400 dark:focus:ring-blue-400'}
+    ${errors.password
+                  ? 'border-red-500 focus:ring-red-400 dark:focus:ring-red-400'
+                  : ' focus:ring-blue-400 dark:focus:ring-blue-400'}
   `}
-/>
+            />
 
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
               className="absolute top-1/2 right-4 transform -translate-y-1/2 "
             >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              {showPassword ?<Eye size={20} />:<EyeOff size={20} />}
             </button>
           </div>
           {errors.password && <p className="text-red-500 text-sm mb-3">{errors.password}</p>}
@@ -167,7 +166,7 @@ export default function Login() {
             </Link>
           </p>
         </div>
-      </div> : <Loader/>}
+      </div> : <Loader />}
     </div>
   );
 }

@@ -47,21 +47,6 @@ export const fetchPlaces = createAsyncThunk<
   }
 );
 
-
-
-// 2️⃣  DETAILS BY ID 
-export const fetchPlaceDetails = createAsyncThunk<PlaceDetails, string, { rejectValue: string }>('places/fetchById', async (fsqId, { rejectWithValue }) => {
-  try {
-    const { data } = await axios.get<PlaceDetails>(`${BASE_URL}places/${fsqId}`, {
-      headers: { Authorization:"fsq30Q8i/eVynXTu8TMtSPJ9/MHzG+o3+82B6zyDX/n7UK0=" },
-    });
-    return data;
-  } catch (e: any) {
-    return rejectWithValue(e.response?.data?.message ?? e.message);
-  }
-});
-
-
 interface PlacesState {
   items: Place[];  
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
@@ -110,19 +95,6 @@ const placesSlice = createSlice({
         s.status = 'failed';
         s.error = a.payload ?? 'Request failed';
       })
-      // details by id
-      .addCase(fetchPlaceDetails.pending, (s) => {
-        s.status = 'loading';
-        s.error = null;
-      })
-      .addCase(fetchPlaceDetails.fulfilled, (s, a) => {
-        s.status = 'succeeded';
-          s.placeDetail = a.payload; 
-      })
-      .addCase(fetchPlaceDetails.rejected, (s, a) => {
-        s.status = 'failed';
-        s.error = a.payload ?? 'Request failed';
-      }),
 });
 
 export const { selectPlace, clearDetails } = placesSlice.actions;
@@ -130,6 +102,4 @@ export default placesSlice.reducer;
 
 // selectors
 export const selectAllPlaces = (state: RootState) => state.places.items;
-// export const selectPlaceById = (id: string) => (state: RootState) =>
-//   state.places.items.find((p) => p.fsq_place_id === id);
 export const selectPlaceDetail = (state: RootState) => state.places.placeDetail;

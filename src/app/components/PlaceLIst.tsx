@@ -3,7 +3,6 @@ import React, {useEffect, useState } from 'react';
 import { Place } from '../features/places/types';
 import { PlaceCard } from './PlaceCard';
 import { useAppDispatch } from '../lib/hooks';
-import { fetchPlaceDetails } from '../features/places/PlacesSlice';
 
 interface Props {
   places: Place[];
@@ -25,7 +24,6 @@ export const PlaceList: React.FC<Props> = ({ places, query }) => {
 
 
   const handleData = (id: string) => {
-    dispatch(fetchPlaceDetails(id));
     setIsOpenDetailModal(true);
   };
 
@@ -34,7 +32,7 @@ export const PlaceList: React.FC<Props> = ({ places, query }) => {
   };
   return (
     <div>
-      <div className="overflow-y-auto h-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-2 gap-2">
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 overflow-y-auto h-auto">
         {sortedPlaces.slice(0, visibleCount).map((place) => (
           <div key={place.fsq_place_id} onClick={() => handleData(place.fsq_place_id)}>
             <PlaceCard place={place} />
