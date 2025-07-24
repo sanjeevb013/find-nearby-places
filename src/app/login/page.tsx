@@ -7,19 +7,21 @@ import toast from 'react-hot-toast';
 import Image from 'next/image';
 import Link from 'next/link';
 import Images from '../assets';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff} from 'lucide-react';
 import { useContext } from 'react';
 import { ThemeContext } from '../context/ThemeContext';
 import { Sun, Moon } from 'lucide-react';
+import Loader from '../components/Loader';
 
 
 export default function Login() {
   const router = useRouter();
+    const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
     const { theme, toggleTheme } = useContext(ThemeContext)
-
+  console.log(loading)
   const validateForm = () => {
     const { email, password } = form;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -54,17 +56,20 @@ export default function Login() {
     }
 
     try {
+      setLoading(true);
       await signInWithEmailAndPassword(auth, form.email, form.password);
+      router.push('/')
       toast.success('Login successful!');
-      startTransition(() => router.push('/'));
     } catch (error: any) {
       toast.error('Please enter valid credentials');
+    }finally{
+      setLoading(false);
     }
   };
 
   return (
     <div className={`min-h-screen flex items-center justify-center px-4 ${theme === 'dark' ? '' :''}`}>
-      <div className={` shadow-lg rounded-2xl flex w-full max-w-4xl overflow-hidden ${theme === 'dark' ? 'bg-dark-color' : 'bg-light-color'} `}>
+      {!loading ? <div className={` shadow-lg rounded-2xl flex w-full max-w-4xl overflow-hidden ${theme === 'dark' ? 'bg-dark-color' : 'bg-light-color'} `}>
         {/* Left Image Panel */}
         <div className="hidden md:flex flex-col justify-center items-center w-1/2  p-8">
           <Image
@@ -150,7 +155,7 @@ export default function Login() {
           {/* Submit Button */}
           <button
             onClick={handleLogin}
-            className="w-full py-3 rounded-md bg-blue-600 hover:bg-blue-700 text-white transition"
+            className="w-full py-3 rounded-md bg-blue-600 hover:bg-blue-700 text-white transition cursor-pointer"
           >
             Log In
           </button>
@@ -162,7 +167,7 @@ export default function Login() {
             </Link>
           </p>
         </div>
-      </div>
+      </div> : <Loader/>}
     </div>
   );
 }

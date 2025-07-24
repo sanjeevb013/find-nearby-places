@@ -18,12 +18,12 @@ export const LocationButton: React.FC<Props> = ({ onLocate, loading }) => {
     <button
       className={`
         w-[110px] h-[40px] flex items-center justify-start gap-[10px]
-        bg-lime-300 text-neutral-900 font-semibold rounded-full border-none
+        bg-blue-600 text-white font-semibold rounded-full border-none
         relative cursor-pointer transition duration-500 shadow-[5px_5px_10px_rgba(0,0,0,0.116)] 
         pl-2 disabled:opacity-50
         ${!loading && !clicked ? 'animate-zoom-in-out' : ''}
         ${isHovered ? 'pause-animation' : ''}
-        ${loading ? 'bg-lime-200 cursor-not-allowed' : 'hover:bg-lime-200'}
+        ${loading ? 'bg-blue-200 cursor-not-allowed' : 'hover:bg-blue-200'}
         active:scale-[0.97] active:duration-200
       `}
       onClick={handleClick}

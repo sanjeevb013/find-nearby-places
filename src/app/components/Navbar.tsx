@@ -12,8 +12,7 @@ export default function Navbar() {
   const [displayedText, setDisplayedText] = useState('')
   const [index, setIndex] = useState(0)
   const router = useRouter()
-
-  const fullText = 'Welcome Sanjeev'
+  const fullText = 'Discover restaurants, parks, and Hospitals around you instantly!'
 
   useEffect(() => {
     if (index < fullText.length) {

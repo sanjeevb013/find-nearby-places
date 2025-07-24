@@ -13,6 +13,7 @@ import { fetchAddress } from './features/currentAddress/currentAddressSLice';
 import { fetchWeather } from './features/weather/weatherSlice';
 import { ThemeContext } from './context/ThemeContext';
 import ProtectedLayout from './components/ProtectedLayout';
+import toast from 'react-hot-toast';
 
 const Home: NextPage = () => {
   const dispatch = useAppDispatch();
@@ -27,7 +28,7 @@ const Home: NextPage = () => {
   const {status,error} = useAppSelector((s) => s.places);
     const {currentAddress,addressStatus,addressError} = useAppSelector((s) => s.address);
       const {weatherSuccess,weatherStatus,weatherError} = useAppSelector((s) => s.weather);
-  console.log(places,"hahahhahaahha")
+
   /* Detect location, then fire the thunk */
   const handleDetectLocation = async () => {
     setLocLoading(true);
@@ -40,7 +41,7 @@ const Home: NextPage = () => {
        dispatch(fetchAddress({ lat: next[0], lng: next[1]}));
       dispatch(fetchPlaces({ lat: next[0], lng: next[1], query, limit: 15 }));
     } catch (err) {
-      alert('Failed to detect location');
+      toast.error('Failed to detect location');
       console.error(err);
     }
     setLocLoading(false);
@@ -48,7 +49,7 @@ const Home: NextPage = () => {
   
   const handleQueryClick = (nextQuery: string) => {
     if (!coords) {
-      alert('Please detect your location first.');
+      toast.error('Please detect your location first.');
       return;
     }
     setQuery(nextQuery);
