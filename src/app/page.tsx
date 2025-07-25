@@ -14,6 +14,7 @@ import { fetchWeather } from './features/weather/weatherSlice';
 import { ThemeContext } from './context/ThemeContext';
 import ProtectedLayout from './components/ProtectedLayout';
 import toast from 'react-hot-toast';
+import Image from 'next/image';
 
 const Home: NextPage = () => {
   const dispatch = useAppDispatch();
@@ -86,7 +87,7 @@ const Home: NextPage = () => {
         <div className="rounded-xl bg-white/80 p-3 w-full sm:w-auto">
           <h2 className="text-lg font-semibold text-gray-800 mb-2 text-center">Weather</h2>
           <div className="flex items-center gap-4">
-            <img
+            <Image
               src={`https://openweathermap.org/img/wn/${weatherSuccess.weather[0].icon}@2x.png`}
               alt={weatherSuccess.weather[0].description}
               className="w-12 h-12 sm:w-16 sm:h-16"

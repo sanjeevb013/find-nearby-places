@@ -1,13 +1,12 @@
 import React, { useContext } from 'react';
 import { Place } from '../features/places/types';
 import { getCurrentLocation } from '../utils/getLocation';
-import { ThemeContext } from '../context/ThemeContext';
+import Image from 'next/image';
 interface Props {
   place: Place;
 }
 
 export const PlaceCard: React.FC<Props> = ({ place }) => {
-      const { theme, toggleTheme } = useContext(ThemeContext)
   const category = place.categories?.[0];
   const iconUrl = category
     ? `${category.icon.prefix}64${category.icon.suffix}`
@@ -46,7 +45,7 @@ export const PlaceCard: React.FC<Props> = ({ place }) => {
 >
       <div className="flex items-center gap-4">
         {iconUrl && (
-          <img
+          <Image
             src={iconUrl}
             alt={category?.name}
             className="w-8 h-8 rounded-full p-1 "

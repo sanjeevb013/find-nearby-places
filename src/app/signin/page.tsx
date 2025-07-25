@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Sun, Moon, Eye, EyeOff } from 'lucide-react';
 import Images from '../assets/index';
 import { ThemeContext } from '../context/ThemeContext';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import toast from 'react-hot-toast';
 import { auth } from '../utils/firebaseConfig';
 import { useRouter } from 'next/navigation';
@@ -16,35 +16,70 @@ const SignUp = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const router = useRouter();
 
-  const [form, setForm] = useState({ email: '', password: '' });
-  const [errors, setErrors] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ fullName: '', email: '', password: '' });
+  const [errors, setErrors] = useState({ fullName: '', email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (field: string, value: string) => {
-    setForm(prev => ({ ...prev, [field]: value }));
-    setErrors(prev => ({ ...prev, [field]: '' }));
-  };
+const handleChange = (field: string, value: string) => {
+  // Prevent first character from being a space
+  if (value.length === 1 && value[0] === ' ') return;
 
-  const handleSignup = async () => {
-    const newErrors: any = {};
-    if (!form.email) newErrors.email = 'Email is required';
-    if (!form.password) newErrors.password = 'Password is required';
+  setForm(prev => ({ ...prev, [field]: value }));
+  setErrors(prev => ({ ...prev, [field]: '' }));
+};
 
-    setErrors(newErrors);
-    if (Object.keys(newErrors).length > 0) return;
 
-    setLoading(true);
-    try {
-      await createUserWithEmailAndPassword(auth, form.email, form.password);
-      toast.success('Signup successful!');
-      router.push('/');
-    } catch (error: any) {
-      toast.error(error?.message || 'Signup failed');
-    } finally {
-      setLoading(false);
-    }
-  };
+const handleSignup = async () => {
+  const newErrors: any = {};
+
+  // Full Name Validation
+  const nameTrimmed = form.fullName.trim();
+  if (!nameTrimmed) {
+    newErrors.fullName = 'Full name is required';
+  } else if (!/^[A-Za-z ]+$/.test(nameTrimmed)) {
+    newErrors.fullName = 'Name can contain only letters and spaces';
+  } else if (nameTrimmed.length < 2) {
+    newErrors.fullName = 'Name must be at least 2 characters';
+  }
+
+  // Email Validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!form.email.trim()) {
+    newErrors.email = 'Email is required';
+  } else if (!emailRegex.test(form.email)) {
+    newErrors.email = 'Invalid email format';
+  }
+
+  // Password Validation
+  const password = form.password;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&_])[A-Za-z\d@$!%*?#&_]{6,}$/;
+  if (!password) {
+    newErrors.password = 'Password is required';
+  } else if (!passwordRegex.test(password)) {
+    newErrors.password =
+      'Password must be at least 6 characters, include uppercase, lowercase, number, and special character';
+  }
+
+  setErrors(newErrors);
+  if (Object.keys(newErrors).length > 0) return;
+
+  setLoading(true);
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password);
+
+    await updateProfile(userCredential.user, {
+      displayName: nameTrimmed,
+    });
+     localStorage.setItem('fullName', nameTrimmed);
+    toast.success('Signup successful!');
+    router.push('/');
+  } catch (error: any) {
+    toast.error(error?.message || 'Signup failed');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className={`min-h-screen flex items-center justify-center px-4 ${theme === 'dark' ? '' : ''}`}>
@@ -80,9 +115,22 @@ const SignUp = () => {
               </label>
             </div>
 
+            {/* Full Name Input */}
+            <input
+              type="text"
+              placeholder="Full Name"
+              value={form.fullName}
+              onChange={(e) => handleChange('fullName', e.target.value)}
+              className={`w-full px-4 py-3 mb-2 border rounded-md placeholder-gray-500 dark:placeholder-gray-300
+                focus:outline-none focus:ring-2 ${
+                  errors.fullName ? 'border-red-500 focus:ring-red-400' : 'focus:ring-blue-400'
+                }`}
+            />
+            {errors.fullName && <p className="text-red-500 text-sm mb-3">{errors.fullName}</p>}
+
             {/* Email Input */}
             <input
-              type="email"
+              type="text"
               placeholder="Your Email"
               value={form.email}
               onChange={(e) => handleChange('email', e.target.value)}

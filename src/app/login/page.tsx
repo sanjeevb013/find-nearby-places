@@ -57,7 +57,8 @@ export default function Login() {
 
     try {
       setLoading(true);
-      await signInWithEmailAndPassword(auth, form.email, form.password);
+      const resp=await signInWithEmailAndPassword(auth, form.email, form.password);
+      localStorage.setItem('fullName',  String(resp.user.displayName));
       router.push('/')
       toast.success('Login successful!');
     } catch (error: any) {
@@ -114,7 +115,7 @@ export default function Login() {
 
           {/* Email Input */}
           <input
-            type="email"
+            type="text"
             placeholder="Your Email"
             value={form.email}
             onChange={(e) => handleChange('email', e.target.value)}
