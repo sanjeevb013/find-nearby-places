@@ -15,7 +15,7 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
   }, [user, loading]);
 
   if (loading || !user) {
-    return <p className="text-center mt-10"><Loader/></p>;
+    return <div className="text-center mt-10"><Loader/></div>;
   }
 
   return <>{children}</>;
