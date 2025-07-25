@@ -13,7 +13,8 @@ export default function Navbar() {
   const [displayedText, setDisplayedText] = useState('')
   const [index, setIndex] = useState(0)
   const router = useRouter()
-  const fullText = 'Discover places around you instantly!'
+  const name=localStorage.getItem("fullName");
+  const fullText = `Welcome ${String(name)}`
 
   useEffect(() => {
     if (index < fullText.length) {

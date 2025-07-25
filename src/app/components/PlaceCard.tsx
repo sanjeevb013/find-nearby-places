@@ -49,6 +49,8 @@ export const PlaceCard: React.FC<Props> = ({ place }) => {
             src={iconUrl}
             alt={category?.name}
             className="w-8 h-8 rounded-full p-1 "
+            width={64}
+            height={64}
           />
         )}
         <div>

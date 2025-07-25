@@ -1,4 +1,3 @@
-// src/app/api/foursquare/route.ts
 import { NextRequest } from 'next/server';
 import axios from 'axios';
 
