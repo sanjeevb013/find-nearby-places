@@ -105,6 +105,7 @@ interface MapViewProps {
 }
 
 const MapView: React.FC<MapViewProps> = ({ places, center, userLocation }) => {
+  console.log(places,"hh")
   return (
     <MapContainer center={center} zoom={13} style={{ height: '500px', width: '100%' }}>
       <TileLayer
@@ -119,7 +120,7 @@ const MapView: React.FC<MapViewProps> = ({ places, center, userLocation }) => {
 
       {/* Markers for nearby places */}
       {places.map((place) => (
-        <Marker key={place.id} position={[place.latitude, place.longitude]}>
+        <Marker key={place.fsq_place_id} position={[place.latitude, place.longitude]}>
           <Popup>{place.name}</Popup>
         </Marker>
       ))}
